@@ -16,15 +16,10 @@ def BasePointGGet():
 def ECPointGen(x, y):
     newPoint = ECPoint(x, y)
     if IsOnCurveCheck(newPoint):
-        return ECPoint(x, y)
+        return newPoint
 
-def IsOnCurveCheck(a):
-    try:
-        point = Point(a.X, a.Y, curve)
-    except ValueError:
-        print(f"Point coordinates are not on curve")
-        return False
-    return point.on_curve()
+def IsOnCurveCheck(p):
+    return curve.is_point_on_curve((p.X, p.Y))
 
 def AddECPoints(a, b):
     pa = Point(a.X, a.Y, curve)
