@@ -1,5 +1,6 @@
 import fastecdsa.curve as curve
 from fastecdsa.point import Point
+from fastecdsa.encoding import sec1
 import secrets
 
 class ECPoint:
@@ -37,30 +38,36 @@ def ScalarMult(k, a):
     mul = k * p
     return ECPoint(mul.x, mul.y)
 
-def ECPointToString(p):
-    return f"({hex(p.X)}, {hex(p.Y)})"
-
-def StringToECPoint(s):
-    x, y = s.strip('()').split(',')
-    return ECPoint(int(x, 16), int(y, 16))
-
 def PrintECPoint(point):
     print(f"X: {hex(point.X)}")
     print(f"Y: {hex(point.Y)}")
 
+def SerializePoint(point, compressed = False):
+    x, y = point.X, point.Y
+    return sec1.SEC1Encoder.encode_public_key(Point(x, y, curve), compressed)
+
+def DeserializePoint(bytes):
+    return sec1.SEC1Encoder.decode_public_key(bytes, curve)
+
+# point = BasePointGGet()
+# sp = SerializePoint(point, True)
+# print(sp.hex())
+# dsp = DeserializePoint(sp)
+# print(dsp)
+
 # k*(d*G) = d*(k*G)
 
-G = BasePointGGet()
-k = secrets.randbits(256)
-
-d = secrets.randbits(256)
-
-H1 = ScalarMult(d, G)
-H2 = ScalarMult(k, H1)
-
-H3 = ScalarMult(k, G)
-H4 = ScalarMult(d, H3)
-
-
-print(PrintECPoint(H2))
-print(PrintECPoint(H4))
+# G = BasePointGGet()
+# k = secrets.randbits(256)
+#
+# d = secrets.randbits(256)
+#
+# H1 = ScalarMult(d, G)
+# H2 = ScalarMult(k, H1)
+#
+# H3 = ScalarMult(k, G)
+# H4 = ScalarMult(d, H3)
+#
+#
+# print(PrintECPoint(H2))
+# print(PrintECPoint(H4))
