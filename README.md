@@ -28,6 +28,10 @@ with a wrapper function, e.g.
 ```python
 SetCurve(curve.secp256k1)
 ```
+<img width="654" alt="Screenshot 2023-11-21 at 21 51 57" src="https://github.com/mllwchrry/elliptic-curve-wrapper/assets/72436706/b3d58f9a-b73b-4b46-9c49-3665c409daeb">
+
+
+NOTE: Please get acquainted with http://safecurves.cr.yp.to/ before choosing a curve.
 
 ## Serialization and Deserialization
 
@@ -78,4 +82,5 @@ python3 -m unittest test.py
 ```
 
 ### Test results
+<img width="695" alt="Screenshot 2023-11-21 at 21 52 17" src="https://github.com/mllwchrry/elliptic-curve-wrapper/assets/72436706/69ce1807-97dd-4549-a144-e71340b095e4">
 
