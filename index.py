@@ -1,14 +1,19 @@
 import fastecdsa.curve as curve
 from fastecdsa.point import Point
 from fastecdsa.encoding import sec1
-import secrets
 
 class ECPoint:
     def __init__(self, x, y):
         self.X = x
         self.Y = y
 
-curve = curve.secp256k1
+# setting the default curve
+default_curve = curve.secp256k1
+curve = default_curve
+
+def SetCurve(c):
+    global curve
+    curve = c
 
 def BasePointGGet():
     BasePoint = curve.G
@@ -18,6 +23,8 @@ def ECPointGen(x, y):
     newPoint = ECPoint(x, y)
     if IsOnCurveCheck(newPoint):
         return newPoint
+    else:
+        raise ValueError("Point is not on curve")
 
 def IsOnCurveCheck(p):
     return curve.is_point_on_curve((p.X, p.Y))
@@ -28,46 +35,29 @@ def AddECPoints(a, b):
     result = pa + pb
     return ECPoint(result.x, result.y)
 
-def DoubleECPoints(a):
+def DoubleECPoint(a):
     p = Point(a.X, a.Y, curve)
     doubled_p = 2 * p
     return ECPoint(doubled_p.x, doubled_p.y)
 
-def ScalarMult(k, a):
+def ScalarMult(a, k):
     p = Point(a.X, a.Y, curve)
     mul = k * p
     return ECPoint(mul.x, mul.y)
+
+def ArePointsEqual(a, b):
+    return a.X == b.X and a.Y == b.Y
 
 def PrintECPoint(point):
     print(f"X: {hex(point.X)}")
     print(f"Y: {hex(point.Y)}")
 
+# serializes a point according to the SEC1 standard (both compressed and uncompressed format)
 def SerializePoint(point, compressed = False):
     x, y = point.X, point.Y
     return sec1.SEC1Encoder.encode_public_key(Point(x, y, curve), compressed)
 
+# deserializes a point according to the SEC1 standard (both compressed and uncompressed format)
 def DeserializePoint(bytes):
-    return sec1.SEC1Encoder.decode_public_key(bytes, curve)
-
-# point = BasePointGGet()
-# sp = SerializePoint(point, True)
-# print(sp.hex())
-# dsp = DeserializePoint(sp)
-# print(dsp)
-
-# k*(d*G) = d*(k*G)
-
-# G = BasePointGGet()
-# k = secrets.randbits(256)
-#
-# d = secrets.randbits(256)
-#
-# H1 = ScalarMult(d, G)
-# H2 = ScalarMult(k, H1)
-#
-# H3 = ScalarMult(k, G)
-# H4 = ScalarMult(d, H3)
-#
-#
-# print(PrintECPoint(H2))
-# print(PrintECPoint(H4))
+    deserialized_point = sec1.SEC1Encoder.decode_public_key(bytes, curve)
+    return ECPoint(deserialized_point.x, deserialized_point.y)
