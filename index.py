@@ -48,9 +48,9 @@ def ScalarMult(a, k):
 def ArePointsEqual(a, b):
     return a.X == b.X and a.Y == b.Y
 
-def PrintECPoint(point):
-    print(f"X: {hex(point.X)}")
-    print(f"Y: {hex(point.Y)}")
+def PrintECPoint(a):
+    print(f"X: {hex(a.X)}")
+    print(f"Y: {hex(a.Y)}")
 
 # serializes a point according to the SEC1 standard (both compressed and uncompressed format)
 def SerializePoint(point, compressed = False):
